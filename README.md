@@ -143,14 +143,14 @@ With Agentic AI, contextual research, finding relevant speakers with experience 
 
 ## Team
 
-**Sandeep PBK** - Technical Lead & AI Architecture  
-Email: [p.krishnasandeep5@gmail.com](mailto:p.krishnasandeep5@gmail.com)  
-Role: System design, AI model integration, workflow orchestration
-
 **Shailesh Hegde** - Product Strategy & Integration  
 Email: [hegde.shailesh@gmail.com](mailto:hegde.shailesh@gmail.com)  
 Role: LinkedIn integration, conversation flow design, user experience optimization
 
+**Sandeep PBK** - Technical & AI Architecture  
+Email: [p.krishnasandeep5@gmail.com](mailto:p.krishnasandeep5@gmail.com)  
+Role: System design, AI model integration, workflow orchestration
+
 ***
 
-**© 2024 Team Turbine | Recruit A Speaker - AI-Powered Event Speaker Automation**
+**© 2025 Team Turbine | Recruit A Speaker - AI-Powered Event Speaker Automation**
