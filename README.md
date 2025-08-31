@@ -124,7 +124,7 @@ With Agentic AI, contextual research, finding relevant speakers with experience 
 **Technical Limitations:**
 - Lower accuracy could impact trust (risk)
 - Reputational risk if AI messes up the conversation
-- Has not been tested for a variety of topics
+- Has been tested for 5-7 topics
 - Need to expose the explainability of the results to the user
 
 **Platform Risks:**
