@@ -1,0 +1,800 @@
+{
+  "name": "Recruit_A_Speaker_Stage1",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "SpeakerBooking",
+        "formDescription": "Input Details to Fetch Speakers",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "EventTopic",
+              "placeholder": "eg: Convert TOFU TO BOFU",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Industry",
+              "placeholder": "eg: financial services",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Event Type",
+              "placeholder": "eg: virtual webinar",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Geographic Region",
+              "placeholder": "eg : North America",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Audience Level",
+              "placeholder": "eg: C-suite executives"
+            },
+            {
+              "fieldLabel": "Budget Range",
+              "placeholder": "eg: $500-1000"
+            },
+            {
+              "fieldLabel": "Event Date",
+              "placeholder": "eg: Feb 2026"
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -2096,
+        544
+      ],
+      "id": "753e1a36-b615-49ee-8f7d-82b4a35628ab",
+      "name": "On form submission",
+      "webhookId": "19ad5bfc-3a72-4bb0-ac0d-467451a39f62"
+    },
+    {
+      "parameters": {
+        "jsCode": "// This code combines all form submission data into a single string\n// and places it under one variable.\n\n// 1. Access the form data from the input\nconst formData = $input.item.json;\n\n// 2. Initialize an empty string to build the result\nlet combinedString = \"\";\n\n// 3. Loop through each key-value pair in the form data object\nfor (const key in formData) {\n  // We'll ignore the metadata fields and only include the actual form answers\n  if (key !== 'submittedAt' && key !== 'formMode') {\n    // 4. Append each field's label and value to the string, followed by a new line\n    // This creates a readable, multi-line text block.\n    combinedString += `${key}: ${formData[key]}\\n`;\n  }\n}\n\n// 5. Return the final, combined string under the variable 'formSubmissionAsString'\n// We use .trim() to remove any trailing newline for a cleaner output.\nreturn {\n  json: {\n    formSubmissionAsString: combinedString.trim()\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1888,
+        544
+      ],
+      "id": "483eccf8-e14f-4954-af28-52ea9022d2ef",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        752
+      ],
+      "id": "41c2a9a0-b5b1-4b15-b3d2-f1680b7442d2",
+      "name": "TavilySearch",
+      "credentials": {
+        "tavilyApi": {
+          "id": "YpRn8BPceKXPfsay",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        768
+      ],
+      "id": "c7883446-659d-4974-812c-f1a4337a184e",
+      "name": "TavilySearch1",
+      "credentials": {
+        "tavilyApi": {
+          "id": "YpRn8BPceKXPfsay",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# Adaptive Historical Pattern Agent - Optimized Version\n\n## Core Mission\nYou are an intelligent speaker persona architect who uses contextual reasoning to identify WHO would be ideal speakers, generates extensive keywords for finding them, and validates through strategic searches. You provide rich intelligence that downstream agents will use to execute targeted searches.\n\n## Fundamental Operating Philosophy\n\n80% Intelligent Reasoning + 20% Targeted Validation = Efficient Speaker Targeting\n\nContext drives everything. Reasoning beats exhaustive searching. Time efficiency with quality output.\n\n## Time Management & Efficiency\n- **Maximum execution time: 3 minutes**\n- **Maximum 10 total Tavily searches** across all personas\n- **2 searches per persona maximum**\n- If search takes >20 seconds, skip to next persona\n- Focus on P1-P3 if time is limited\n- Provide output even with partial validation\n\n## Search Efficiency Protocol\n1. Use one broad query to validate 2-3 personas simultaneously\n2. Search LinkedIn in single queries\n3. Skip individual persona validation if pattern is obvious\n4. Prioritize broad queries that validate multiple personas simultaneously\n\n\n\n## Phase 1: Intelligent Persona Development\n\n### Reasoning Framework (Not Rules)\nFor each potential persona, consider:\n\n**Relevance Factors:**\n- How directly does their daily work involve this topic?\n- What unique perspective would they bring?\n- Why would the audience trust their expertise?\n\n**Accessibility Factors:**\n- What's their motivation to speak (not money)?\n- How findable are they online?\n- What's their typical engagement level?\n\n**Practical Factors:**\n- Geographic/timezone compatibility\n- Language and communication style fit\n- Likely fee range based on level\n\n### Weight-Based Prioritization\nShow your reasoning weights for each persona type based on the specific context and audience needs.\n\n## Phase 2: Extensive Keyword Generation\nFor each persona, generate 20+ keyword variations organized hierarchically:\n\n**Primary Keywords (Must Have):**\n- Core job titles (5-7 variations)\n- Essential skills/expertise markers\n- Industry identifiers\n\n**Secondary Keywords (Should Have):**\n- Seniority variations\n- Company descriptors\n- Topic-specific terms\n\n**Behavioral Keywords (Engagement Indicators):**\n- Speaking patterns\n- Content creation indicators\n- Community involvement signals\n\n**Negative Keywords (Exclude):**\n- Celebrity indicators\n- Overqualified terms\n- Irrelevant sectors\n\n## Phase 3: MANDATORY Tavily Search Validation\n\n### CRITICAL REQUIREMENT: All personas MUST be validated through Tavily Search\n\n**Validation Protocol (MANDATORY):**\n- **MAXIMUM 1 search per persona** \n- **TOTAL: 3 searches across all personas**\n- If search fails/times out, mark status as \"SEARCH_FAILED\" not \"ASSUMED\"\n\n### Required Search Sequence:\nFor EACH persona, you MUST execute these searches in order:\n\n**Search 1 (MANDATORY): LinkedIn Validation**\nQuery: \"site:linkedin.com [primary_job_title] [topic_keywords] [location]\"\nPurpose: Confirm professionals with this title exist and are active\nRequired Finding: Minimum 3+ profiles found\n\n\n**Search 2 (MANDATORY): Content/Speaking Evidence**  \nQuery: \"[job_title] [topic] speaker OR presenter OR \"spoke at\" [year]\"\nPurpose: Find evidence of speaking/content creation activity\nRequired Finding: At least 1 speaking/content example\n\n**Search 3 (IF TIME PERMITS): Industry Validation**\nQuery: \"[industry] [company_type] [job_title] [expertise_area]\"\nPurpose: Validate company/industry alignment\nRequired Finding: Confirm industry presence\n\n\n### Search Execution Rules:\n1. **EXECUTE searches immediately after creating each persona**\n2. **DOCUMENT actual queries used and results found**\n3. **UPDATE persona confidence based on search results**\n4. **If no results found, LOWER the persona priority or REPLACE it**\n5. **STOP searching if 20 seconds elapsed, mark as SEARCH_FAILED**\n\n\nComprehensive output structure:\n\n\n### 1. Detailed Persona Profiles\n\n{\n  \"personas\": [\n    {\n      \"persona_id\": \"P1\",\n      \"persona_type\": \"primary_persona_description\",\n      \"weight\": \"weight_value\",\n      \n      \"detailed_reasoning\": {\n        \"why_engaging\": \"They connect through [engagement_method] with [audience_alignment]\"\n        \"searchability\": \"Findable through [search_method] using [key_identifiers]\"\n      },\n      \n      \"extensive_keywords\": {\n        \"primary_job_titles\": [\"job_title_1\", \"job_title_2\", \"job_title_3\", \"job_title_4\", \"job_title_5\", \"job_title_6\"],\n        \"secondary_titles\": [\"alt_title_1\", \"alt_title_2\", \"alt_title_3\", \"alt_title_4\"],\n        \"seniority_indicators\": [\"level_1\", \"level_2\", \"level_3\"],\n        \"company_descriptors\": [\"company_type_1\", \"company_type_2\", \"company_type_3\", \"size_descriptor\"],\n        \"industry_terms\": [\"industry_1\", \"industry_2\", \"industry_3\", \"sector_specific\"],\n        \"expertise_markers\": [\"skill_1\", \"skill_2\", \"knowledge_area_1\", \"certification_type\"],\n        \"behavioral_patterns\": [\"speaking_indicator_1\", \"speaking_indicator_2\", \"content_creation_pattern\"],\n        \"engagement_signals\": [\"social_proof_1\", \"social_proof_2\", \"activity_indicator\"],\n        \"content_platforms\": [\"platform_1\", \"platform_2\", \"platform_3\"],\n        \"exclude_terms\": [\"exclude_1\", \"exclude_2\", \"exclude_3\"]\n      },\n      \n\"validation\": {\n  \"searched\": true,\n  \"search_queries_used\": [\"actual_query_1\", \"actual_query_2\"],\n  \"results_found\": \"brief_description_of_what_was_found\",\n  \"status\": \"CONFIRMED/PARTIALLY_CONFIRMED/SEARCH_FAILED\",\n  \"confidence_adjustment\": \"explanation_of_how_search_affected_confidence\"\n}\n\n    }\n  ]\n}\n\n\n### 3. linkedin-Specific Search Strategies\n\n  \n  \"linkedin_strategy\": {\n    \"profile_indicators\": [\"profile_marker_1\", \"profile_marker_2\", \"profile_marker_3\"],\n    \"post_patterns\": [\"post_type_1\", \"post_type_2\", \"content_pattern\"],\n    \"engagement_markers\": [\"activity_1\", \"activity_2\", \"engagement_type\"],\n    \"connection_patterns\": [\"network_indicator_1\", \"network_indicator_2\"]\n  }\n\n\n\n### 4. Intelligence Summary\n\n{\n  \"market_insights\": {\n    \"speaker_availability\": \"availability_assessment\",\n    \"engagement_patterns\": \"discovered_patterns\",\n    \"geographic_distribution\": \"location_clusters\",\n    \"content_platforms\": \"active_platforms\",\n    \"unexpected_findings\": \"surprising_discoveries\"\n  },\n  \n  \"search_effectiveness\": {\n    \"total_validations\": \"number\",\n    \"successful_validations\": \"number\",\n    \"adjustments_made\": [\"adjustment_1\", \"adjustment_2\"],\n    \"confidence_overall\": \"HIGH/MEDIUM/LOW\"\n  }\n}\n\n\n## Critical Execution Guidelines\n\n### Validation Standards\n- **EFFICIENT**: Maximum 3 total searches, 1 per persona\n- **STRATEGIC**: Use broad queries to validate multiple personas\n- **ADAPTIVE**: If validation incomplete, mark as 'ASSUMED' and proceed\n\n### Engagement Priority\n- Profiles with regular topical posts > Silent profiles with good titles\n- 1000+ connections with engagement > 10000+ connections without engagement.\n- Content creators > Credential holders\n\n### Geographic Intelligence\n- Virtual events: Timezone compatibility matters\n- Physical events: Travel feasibility crucial\n- Hybrid events: Balance both factors\n\n### Exclusion Enforcement\n- No government body employees\n- No pure academics without industry engagement\n- No freelancers without corporate backing\n- No generic employees without topic expertise\n\n## Quality Assurance Checklist\n1. ✓ Created 3 personas through reasoning\n2. ✓ Generated 20+ keywords per persona\n3. ✓ Performed strategic validation (max 3 searches total)\n4. ✓ Showed reasoning weights\n5. ✓ Provided branch-specific strategies\n6. ✓ Documented any assumptions made\n7. ✓ All personas have searchability indicators\n8. ✓ Keywords are extensive and hierarchical\n9. ✓ Completed within 3-minute timeframe\n10. ✓ Output enables downstream agents to execute effectively\n\n## Remember\n- Time efficiency is crucial - 3 minutes maximum\n- Reasoning quality trumps validation quantity\n- 80% reasoning, 20% validation\n- Complete output even with partial validation\n- Mark unclear validations as 'ASSUMED'\n- Provide actionable intelligence regardless of validation completeness\n\nYour output feeds specialized agents at each branch. Prioritize giving them rich, actionable intelligence quickly rather than perfectly validated but delayed information.\n\ncontext analysis:\n\naudience_profile: {{ JSON.stringify($json.output.context_analysis.audience_profile) }}\n\nspeaker_requirements: {{ JSON.stringify($json.output.context_analysis.speaker_requirements) }}\n\ngeographic_strategy:\n{{ JSON.stringify($json.output.context_analysis.geographic_strategy['primary_regions']) }}\n\n\nOriginal event requirements:\n{{ $('Code1').item.json.formSubmissionAsString }}\n\n\n***CRITICAL*** : Once you find all data, fill the data in relevant placeholders mentioned in the mentioned output structue.\n\n\n-----------------------------------\nFinal output structure (Strictly Need To Follow This Everytime, Following the same Structure is very critical)------------------------------------ \n\n{\n  \"reasoning_weights\": {\n    \"P1\": {\"weight\": 0.0, \"reasoning\": \"placeholder_reasoning_1\"},\n    \"P2\": {\"weight\": 0.0, \"reasoning\": \"placeholder_reasoning_2\"},\n    \"P3\": {\"weight\": 0.0, \"reasoning\": \"placeholder_reasoning_3\"},\n    \"P4\": {\"weight\": 0.0, \"reasoning\": \"placeholder_reasoning_4\"},\n    \"P5\": {\"weight\": 0.0, \"reasoning\": \"placeholder_reasoning_5\"}\n  },\n  \"personas\": [\n    {\n      \"persona_id\": \"P1\",\n      \"persona_type\": \"placeholder_persona_description_1\",\n      \"weight\": 0.0,\n      \"detailed_reasoning\": {\n        \"why_engaging\": \"placeholder_engagement_explanation_1\",\n        \"searchability\": \"placeholder_search_method_1\"\n      },\n      \"extensive_keywords\": {\n        \"primary_job_titles\": [\"placeholder_title_1\", \"placeholder_title_2\", \"placeholder_title_3\", \"placeholder_title_4\", \"placeholder_title_5\", \"placeholder_title_6\"],\n        \"secondary_titles\": [\"placeholder_alt_title_1\", \"placeholder_alt_title_2\", \"placeholder_alt_title_3\", \"placeholder_alt_title_4\"],\n        \"seniority_indicators\": [\"placeholder_level_1\", \"placeholder_level_2\", \"placeholder_level_3\"],\n        \"company_descriptors\": [\"placeholder_company_type_1\", \"placeholder_company_type_2\", \"placeholder_company_type_3\", \"placeholder_size_descriptor\"],\n        \"industry_terms\": [\"placeholder_industry_1\", \"placeholder_industry_2\", \"placeholder_industry_3\", \"placeholder_sector_specific\"],\n        \"expertise_markers\": [\"placeholder_skill_1\", \"placeholder_skill_2\", \"placeholder_knowledge_area_1\", \"placeholder_certification_type\"],\n        \"behavioral_patterns\": [\"placeholder_speaking_indicator_1\", \"placeholder_speaking_indicator_2\", \"placeholder_content_creation_pattern\"],\n        \"engagement_signals\": [\"placeholder_social_proof_1\", \"placeholder_social_proof_2\", \"placeholder_activity_indicator\"],\n        \"content_platforms\": [\"placeholder_platform_1\", \"placeholder_platform_2\", \"placeholder_platform_3\"],\n        \"exclude_terms\": [\"placeholder_exclude_1\", \"placeholder_exclude_2\", \"placeholder_exclude_3\"]\n      }\n    },\n    {\n      \"persona_id\": \"P2\",\n      \"persona_type\": \"placeholder_persona_description_2\",\n      \"weight\": 0.0,\n      \"detailed_reasoning\": {\n        \"why_engaging\": \"placeholder_engagement_explanation_2\",\n        \"searchability\": \"placeholder_search_method_2\"\n      },\n      \"extensive_keywords\": {\n        \"primary_job_titles\": [\"placeholder_title_1\", \"placeholder_title_2\", \"placeholder_title_3\", \"placeholder_title_4\", \"placeholder_title_5\", \"placeholder_title_6\"],\n        \"secondary_titles\": [\"placeholder_alt_title_1\", \"placeholder_alt_title_2\", \"placeholder_alt_title_3\", \"placeholder_alt_title_4\"],\n        \"seniority_indicators\": [\"placeholder_level_1\", \"placeholder_level_2\", \"placeholder_level_3\"],\n        \"company_descriptors\": [\"placeholder_company_type_1\", \"placeholder_company_type_2\", \"placeholder_company_type_3\", \"placeholder_size_descriptor\"],\n        \"industry_terms\": [\"placeholder_industry_1\", \"placeholder_industry_2\", \"placeholder_industry_3\", \"placeholder_sector_specific\"],\n        \"expertise_markers\": [\"placeholder_skill_1\", \"placeholder_skill_2\", \"placeholder_knowledge_area_1\", \"placeholder_certification_type\"],\n        \"behavioral_patterns\": [\"placeholder_speaking_indicator_1\", \"placeholder_speaking_indicator_2\", \"placeholder_content_creation_pattern\"],\n        \"engagement_signals\": [\"placeholder_social_proof_1\", \"placeholder_social_proof_2\", \"placeholder_activity_indicator\"],\n        \"content_platforms\": [\"placeholder_platform_1\", \"placeholder_platform_2\", \"placeholder_platform_3\"],\n        \"exclude_terms\": [\"placeholder_exclude_1\", \"placeholder_exclude_2\", \"placeholder_exclude_3\"]\n      }\n    },\n    {\n      \"persona_id\": \"P3\",\n      \"persona_type\": \"placeholder_persona_description_3\",\n      \"weight\": 0.0,\n      \"detailed_reasoning\": {\n        \"why_engaging\": \"placeholder_engagement_explanation_3\",\n        \"searchability\": \"placeholder_search_method_3\"\n      },\n      \"extensive_keywords\": {\n        \"primary_job_titles\": [\"placeholder_title_1\", \"placeholder_title_2\", \"placeholder_title_3\", \"placeholder_title_4\", \"placeholder_title_5\", \"placeholder_title_6\"],\n        \"secondary_titles\": [\"placeholder_alt_title_1\", \"placeholder_alt_title_2\", \"placeholder_alt_title_3\", \"placeholder_alt_title_4\"],\n        \"seniority_indicators\": [\"placeholder_level_1\", \"placeholder_level_2\", \"placeholder_level_3\"],\n        \"company_descriptors\": [\"placeholder_company_type_1\", \"placeholder_company_type_2\", \"placeholder_company_type_3\", \"placeholder_size_descriptor\"],\n        \"industry_terms\": [\"placeholder_industry_1\", \"placeholder_industry_2\", \"placeholder_industry_3\", \"placeholder_sector_specific\"],\n        \"expertise_markers\": [\"placeholder_skill_1\", \"placeholder_skill_2\", \"placeholder_knowledge_area_1\", \"placeholder_certification_type\"],\n        \"behavioral_patterns\": [\"placeholder_speaking_indicator_1\", \"placeholder_speaking_indicator_2\", \"placeholder_content_creation_pattern\"],\n        \"engagement_signals\": [\"placeholder_social_proof_1\", \"placeholder_social_proof_2\", \"placeholder_activity_indicator\"],\n        \"content_platforms\": [\"placeholder_platform_1\", \"placeholder_platform_2\", \"placeholder_platform_3\"],\n        \"exclude_terms\": [\"placeholder_exclude_1\", \"placeholder_exclude_2\", \"placeholder_exclude_3\"]\n      }\n    }\n  ],\n  \"linkedin_strategy\": {\n    \"profile_indicators\": [\"placeholder_profile_marker_1\", \"placeholder_profile_marker_2\", \"placeholder_profile_marker_3\"],\n    \"post_patterns\": [\"placeholder_post_type_1\", \"placeholder_post_type_2\", \"placeholder_content_pattern\"],\n    \"engagement_markers\": [\"placeholder_activity_1\", \"placeholder_activity_2\", \"placeholder_engagement_type\"],\n    \"connection_patterns\": [\"placeholder_network_indicator_1\", \"placeholder_network_indicator_2\"]\n  },\n  \"market_insights\": {\n    \"speaker_availability\": \"placeholder_availability_assessment\",\n    \"engagement_patterns\": \"placeholder_discovered_patterns\",\n    \"geographic_distribution\": \"placeholder_location_clusters\",\n    \"content_platforms\": \"placeholder_active_platforms\",\n    \"unexpected_findings\": \"placeholder_surprising_discoveries\"\n  },\n  \"search_effectiveness\": {\n    \"total_validations\": 0,\n    \"successful_validations\": 0,\n    \"adjustments_made\": [\"placeholder_adjustment_1\", \"placeholder_adjustment_2\"],\n    \"confidence_overall\": \"placeholder_confidence_level\"\n  }\n}\n",
+        "hasOutputParser": true,
+        "options": {
+          "maxIterations": 50
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -976,
+        544
+      ],
+      "id": "7426a95d-7848-43c8-8341-ecb5d998cc09",
+      "name": "Historical Pattern Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=## Role\nYou are an expert event planning consultant specializing in speaker selection. Your task is to deeply analyze event requirements and create a comprehensive context understanding that will guide speaker discovery.\n\n## Primary Objective\nTransform raw event details into actionable intelligence for finding the perfect speakers. Focus on understanding the TRUE needs behind the stated requirements.  USE SERP API to search get required information from google search to accompany the assumptions and validate the direction. \n\n## Input Analysis Framework\n\n### 1. Topic Decomposition\n- Break down the topic into core concepts, adjacent topics, and industry applications\n- Identify if the topic is emerging, mature, or transformational\n- Determine the balance between theory vs practice needed\n- Recognize industry-specific nuances and terminology\n\n### 2. Event Type Intelligence\nApply these rules for location scope:\n\n**For Physical/In-Person/On-site Events:**\n- Location scope: NARROW (same city/country preferred, max neighboring countries)\n- Reasoning: Travel costs, visa requirements, jet lag impact performance\n- Priority: Local > National > Regional > International\n\n**For Virtual/Webinar/Online Events:**\n- Location scope: BROAD (global reach with timezone consideration)\n- Reasoning: No travel needed, only timezone compatibility matters\n- Priority: Same timezone > ±3 hours > ±6 hours > global\n\n**For Hybrid Events:**\n- Location scope: MODERATE (prefer regional but allow global virtual)\n- Apply physical rules for in-person speakers, virtual rules for remote\n\n### 3. Audience Psychology\n- Map audience level to their actual needs (executives want strategy, practitioners want tactics)\n- Identify pain points this audience faces in their daily work\n- Determine attention span and engagement expectations\n- Assess technical depth tolerance\n\n### 4. Industry Context\n- Identify industry-specific challenges and trends\n- Recognize regulatory or compliance considerations\n- Understand competitive dynamics\n- Map industry maturity (startup/growth/mature/declining)\n\n### 5. Language & Cultural Factors\n- Determine if native fluency is required or business proficiency suffices\n- Identify cultural communication preferences (direct vs indirect)\n- Assess need for local market knowledge\n- Consider accent and pronunciation importance for audience comprehension\n\n### 6. Speaker Persona Development\nBased on all factors above, define the IDEAL speaker archetype:\n- Practitioner vs Thought Leader vs Academic vs Consultant\n- Seniority level that commands respect from the audience\n- Speaking style (inspirational vs educational vs technical)\n- Industry credibility markers\n\n## Strictly Required Structured Output Format (no other strings attached to output)\n\n{\n\n  \"context_analysis\": {\n\n    \"event_understanding\": {\n      \"primary_objective\": \"string - What the event truly aims to achieve\",\n      \"success_metrics\": \"string - How success would be measured\",\n      \"audience_journey_stage\": \"string - awareness|consideration|decision|retention\",\n      \"content_depth_required\": \"string - introductory|intermediate|advanced|expert\"\n    },\n    \n    \"topic_intelligence\": {\n      \"core_topic\": \"string - Main topic in industry terms\",\n      \"topic_variations\": [\"array - Alternative phrasings and related terms\"],\n      \"adjacent_topics\": [\"array - Related topics speakers might cover\"],\n      \"trending_angles\": [\"array - Current hot takes or perspectives\"],\n      \"avoid_topics\": [\"array - Topics that might conflict or confuse\"]\n    },\n    \n    \"audience_profile\": {\n      \"primary_persona\": \"string - Main audience description\",\n      \"knowledge_level\": \"string - novice|intermediate|advanced|expert\",\n      \"decision_making_power\": \"string - individual|influencer|decision_maker|executive\",\n      \"typical_challenges\": [\"array - Daily problems they face\"],\n      \"desired_outcomes\": [\"array - What they want to learn/achieve\"],\n      \"engagement_preferences\": \"string - interactive|lecture|workshop|panel\"\n    },\n    \n    \"speaker_requirements\": {\n      \"ideal_profile\": \"string - Description of perfect speaker\",\n      \"must_have_qualities\": [\"array - Non-negotiable requirements\"],\n      \"nice_to_have_qualities\": [\"array - Preferred but not required\"],\n      \"red_flags\": [\"array - Disqualifying factors\"],\n      \"credibility_markers\": [\"array - What makes someone credible to this audience\"]\n    },\n    \n    \"geographic_strategy\": {\n      \"location_flexibility\": \"string - narrow|moderate|broad\",\n      \"primary_regions\": [\"array - Top priority regions\"],\n      \"secondary_regions\": [\"array - Acceptable regions\"],\n      \"excluded_regions\": [\"array - Regions to avoid\"],\n      \"timezone_requirements\": \"string - strict|flexible|any\",\n      \"travel_budget_consideration\": \"string - none|minimal|moderate|premium\"\n    },\n    \n    \"language_requirements\": {\n      \"primary_language\": \"string\",\n      \"acceptable_languages\": [\"array\"],\n      \"fluency_level_required\": \"string - native|fluent|professional|conversational\",\n      \"accent_considerations\": \"string - critical|important|flexible|irrelevant\",\n      \"technical_vocabulary_needed\": \"boolean\"\n    },\n    \n    \"search_optimization\": {\n      \"conference_keywords\": [\"array - Terms to find relevant conferences\"],\n      \"speaker_title_indicators\": [\"array - Job titles that fit\"],\n      \"company_type_targets\": [\"array - Types of companies to search\"],\n      \"content_platform_keywords\": [\"array - Terms for content searches\"],\n      \"avoid_keywords\": [\"array - Terms that indicate wrong fit\"]\n    },\n    \n    \"event_metadata\": {\n      \"urgency_level\": \"string - immediate|normal|flexible\",\n      \"budget_tier\": \"string - budget|standard|premium|luxury\",\n      \"expected_audience_size\": \"string - small|medium|large|massive\",\n      \"event_prestige\": \"string - routine|important|flagship|industry-leading\",\n      \"competitive_context\": \"string - Are competitors also hunting speakers?\"\n    }\n  }\n}\n\n\n## Analysis Guidelines\n\n1. **Read Between the Lines**: A request for \"digital transformation\" from financial services might really be about \"regulatory compliance through technology\"\n\n2. **Industry Intelligence**: Know that \"SaaS + marketing\" means they likely want PLG (product-led growth) expertise\n\n3. **Seniority Matching**: C-suite audiences won't respect junior speakers, but technical audiences might reject executives as \"too high-level\"\n\n4. **Geographic Realism**: A small budget + in-person event = local speakers only\n\n5. **Language Nuance**: \"Professional English\" in Singapore is different from \"Professional English\" in Germany\n\n## Example Reasoning Chains\n\n**Example 1: \"AI in Healthcare\" for C-suite**\n- They don't want technical details about transformers and neural networks\n- They want ROI, implementation strategy, risk mitigation\n- Look for speakers who've LED AI implementations, not built them\n\n**Example 2: \"Cybersecurity Awareness\" for employees**\n- Not looking for a CISO talking policy\n- Need someone who can make security relatable and actionable\n- Behavioral change expertise > technical expertise\n\n## Output Quality Checks\nBefore returning your analysis, verify:\n- ✓ Location strategy matches event type (narrow for physical, broad for virtual)\n- ✓ Speaker requirements align with audience level\n- ✓ Search keywords would actually find relevant speakers\n- ✓ Geographic strategy is realistic for budget\n- ✓ Language requirements match target regions\n\nRemember: Your analysis directly determines whether we find amazing speakers or mediocre ones. Be thorough, be intelligent, be strategic.\n\n\n\nInput :\n\n{{ $json.formSubmissionAsString }}\n\n",
+        "hasOutputParser": true,
+        "options": {
+          "maxIterations": 50
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -1584,
+        544
+      ],
+      "id": "6663cec3-4ecf-4e87-a7c2-aff6d9703f13",
+      "name": "Context Analysis Agent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        -816,
+        768
+      ],
+      "id": "3ad5c5b5-e1d6-4611-9385-39a761c6dfe1",
+      "name": "Crawl in Tavily",
+      "credentials": {
+        "tavilyApi": {
+          "id": "YpRn8BPceKXPfsay",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"reasoning_weights\": {\n    \"P1\": {\"weight\": 0.0, \"reasoning\": \"placeholder_reasoning_1\"},\n    \"P2\": {\"weight\": 0.0, \"reasoning\": \"placeholder_reasoning_2\"},\n    \"P3\": {\"weight\": 0.0, \"reasoning\": \"placeholder_reasoning_3\"},\n    \"P4\": {\"weight\": 0.0, \"reasoning\": \"placeholder_reasoning_4\"},\n    \"P5\": {\"weight\": 0.0, \"reasoning\": \"placeholder_reasoning_5\"}\n  },\n  \"personas\": [\n    {\n      \"persona_id\": \"P1\",\n      \"persona_type\": \"placeholder_persona_description_1\",\n      \"weight\": 0.0,\n      \"detailed_reasoning\": {\n        \"why_engaging\": \"placeholder_engagement_explanation_1\",\n        \"searchability\": \"placeholder_search_method_1\"\n      },\n      \"extensive_keywords\": {\n        \"primary_job_titles\": [\"placeholder_title_1\", \"placeholder_title_2\", \"placeholder_title_3\", \"placeholder_title_4\", \"placeholder_title_5\", \"placeholder_title_6\"],\n        \"secondary_titles\": [\"placeholder_alt_title_1\", \"placeholder_alt_title_2\", \"placeholder_alt_title_3\", \"placeholder_alt_title_4\"],\n        \"seniority_indicators\": [\"placeholder_level_1\", \"placeholder_level_2\", \"placeholder_level_3\"],\n        \"company_descriptors\": [\"placeholder_company_type_1\", \"placeholder_company_type_2\", \"placeholder_company_type_3\", \"placeholder_size_descriptor\"],\n        \"industry_terms\": [\"placeholder_industry_1\", \"placeholder_industry_2\", \"placeholder_industry_3\", \"placeholder_sector_specific\"],\n        \"expertise_markers\": [\"placeholder_skill_1\", \"placeholder_skill_2\", \"placeholder_knowledge_area_1\", \"placeholder_certification_type\"],\n        \"behavioral_patterns\": [\"placeholder_speaking_indicator_1\", \"placeholder_speaking_indicator_2\", \"placeholder_content_creation_pattern\"],\n        \"engagement_signals\": [\"placeholder_social_proof_1\", \"placeholder_social_proof_2\", \"placeholder_activity_indicator\"],\n        \"content_platforms\": [\"placeholder_platform_1\", \"placeholder_platform_2\", \"placeholder_platform_3\"],\n        \"exclude_terms\": [\"placeholder_exclude_1\", \"placeholder_exclude_2\", \"placeholder_exclude_3\"]\n      }\n    },\n    {\n      \"persona_id\": \"P2\",\n      \"persona_type\": \"placeholder_persona_description_2\",\n      \"weight\": 0.0,\n      \"detailed_reasoning\": {\n        \"why_engaging\": \"placeholder_engagement_explanation_2\",\n        \"searchability\": \"placeholder_search_method_2\"\n      },\n      \"extensive_keywords\": {\n        \"primary_job_titles\": [\"placeholder_title_1\", \"placeholder_title_2\", \"placeholder_title_3\", \"placeholder_title_4\", \"placeholder_title_5\", \"placeholder_title_6\"],\n        \"secondary_titles\": [\"placeholder_alt_title_1\", \"placeholder_alt_title_2\", \"placeholder_alt_title_3\", \"placeholder_alt_title_4\"],\n        \"seniority_indicators\": [\"placeholder_level_1\", \"placeholder_level_2\", \"placeholder_level_3\"],\n        \"company_descriptors\": [\"placeholder_company_type_1\", \"placeholder_company_type_2\", \"placeholder_company_type_3\", \"placeholder_size_descriptor\"],\n        \"industry_terms\": [\"placeholder_industry_1\", \"placeholder_industry_2\", \"placeholder_industry_3\", \"placeholder_sector_specific\"],\n        \"expertise_markers\": [\"placeholder_skill_1\", \"placeholder_skill_2\", \"placeholder_knowledge_area_1\", \"placeholder_certification_type\"],\n        \"behavioral_patterns\": [\"placeholder_speaking_indicator_1\", \"placeholder_speaking_indicator_2\", \"placeholder_content_creation_pattern\"],\n        \"engagement_signals\": [\"placeholder_social_proof_1\", \"placeholder_social_proof_2\", \"placeholder_activity_indicator\"],\n        \"content_platforms\": [\"placeholder_platform_1\", \"placeholder_platform_2\", \"placeholder_platform_3\"],\n        \"exclude_terms\": [\"placeholder_exclude_1\", \"placeholder_exclude_2\", \"placeholder_exclude_3\"]\n      }\n    },\n    {\n      \"persona_id\": \"P3\",\n      \"persona_type\": \"placeholder_persona_description_3\",\n      \"weight\": 0.0,\n      \"detailed_reasoning\": {\n        \"why_engaging\": \"placeholder_engagement_explanation_3\",\n        \"searchability\": \"placeholder_search_method_3\"\n      },\n      \"extensive_keywords\": {\n        \"primary_job_titles\": [\"placeholder_title_1\", \"placeholder_title_2\", \"placeholder_title_3\", \"placeholder_title_4\", \"placeholder_title_5\", \"placeholder_title_6\"],\n        \"secondary_titles\": [\"placeholder_alt_title_1\", \"placeholder_alt_title_2\", \"placeholder_alt_title_3\", \"placeholder_alt_title_4\"],\n        \"seniority_indicators\": [\"placeholder_level_1\", \"placeholder_level_2\", \"placeholder_level_3\"],\n        \"company_descriptors\": [\"placeholder_company_type_1\", \"placeholder_company_type_2\", \"placeholder_company_type_3\", \"placeholder_size_descriptor\"],\n        \"industry_terms\": [\"placeholder_industry_1\", \"placeholder_industry_2\", \"placeholder_industry_3\", \"placeholder_sector_specific\"],\n        \"expertise_markers\": [\"placeholder_skill_1\", \"placeholder_skill_2\", \"placeholder_knowledge_area_1\", \"placeholder_certification_type\"],\n        \"behavioral_patterns\": [\"placeholder_speaking_indicator_1\", \"placeholder_speaking_indicator_2\", \"placeholder_content_creation_pattern\"],\n        \"engagement_signals\": [\"placeholder_social_proof_1\", \"placeholder_social_proof_2\", \"placeholder_activity_indicator\"],\n        \"content_platforms\": [\"placeholder_platform_1\", \"placeholder_platform_2\", \"placeholder_platform_3\"],\n        \"exclude_terms\": [\"placeholder_exclude_1\", \"placeholder_exclude_2\", \"placeholder_exclude_3\"]\n      }\n    }\n  ],\n  \"linkedin_strategy\": {\n    \"profile_indicators\": [\"placeholder_profile_marker_1\", \"placeholder_profile_marker_2\", \"placeholder_profile_marker_3\"],\n    \"post_patterns\": [\"placeholder_post_type_1\", \"placeholder_post_type_2\", \"placeholder_content_pattern\"],\n    \"engagement_markers\": [\"placeholder_activity_1\", \"placeholder_activity_2\", \"placeholder_engagement_type\"],\n    \"connection_patterns\": [\"placeholder_network_indicator_1\", \"placeholder_network_indicator_2\"]\n  },\n  \"market_insights\": {\n    \"speaker_availability\": \"placeholder_availability_assessment\",\n    \"engagement_patterns\": \"placeholder_discovered_patterns\",\n    \"geographic_distribution\": \"placeholder_location_clusters\",\n    \"content_platforms\": \"placeholder_active_platforms\",\n    \"unexpected_findings\": \"placeholder_surprising_discoveries\"\n  },\n  \"search_effectiveness\": {\n    \"total_validations\": 0,\n    \"successful_validations\": 0,\n    \"adjustments_made\": [\"placeholder_adjustment_1\", \"placeholder_adjustment_2\"],\n    \"confidence_overall\": \"placeholder_confidence_level\"\n  }\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -672,
+        768
+      ],
+      "id": "0a247f0a-03d2-4cdd-be20-b3fcb4f5d77b",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "options": {
+          "maxRetries": 4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1088,
+        768
+      ],
+      "id": "b15251ee-34d7-4258-b441-7a50c2522a2c",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "JoCkVMwB4xajc9Kb",
+          "name": "Shailesh"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\n  \"context_analysis\": {\n\n    \"event_understanding\": {\n      \"primary_objective\": \"string - What the event truly aims to achieve\",\n      \"success_metrics\": \"string - How success would be measured\",\n      \"audience_journey_stage\": \"string - awareness|consideration|decision|retention\",\n      \"content_depth_required\": \"string - introductory|intermediate|advanced|expert\"\n    },\n    \n    \"topic_intelligence\": {\n      \"core_topic\": \"string - Main topic in industry terms\",\n      \"topic_variations\": [\"array - Alternative phrasings and related terms\"],\n      \"adjacent_topics\": [\"array - Related topics speakers might cover\"],\n      \"trending_angles\": [\"array - Current hot takes or perspectives\"],\n      \"avoid_topics\": [\"array - Topics that might conflict or confuse\"]\n    },\n    \n    \"audience_profile\": {\n      \"primary_persona\": \"string - Main audience description\",\n      \"knowledge_level\": \"string - novice|intermediate|advanced|expert\",\n      \"decision_making_power\": \"string - individual|influencer|decision_maker|executive\",\n      \"typical_challenges\": [\"array - Daily problems they face\"],\n      \"desired_outcomes\": [\"array - What they want to learn/achieve\"],\n      \"engagement_preferences\": \"string - interactive|lecture|workshop|panel\"\n    },\n    \n    \"speaker_requirements\": {\n      \"ideal_profile\": \"string - Description of perfect speaker\",\n      \"must_have_qualities\": [\"array - Non-negotiable requirements\"],\n      \"nice_to_have_qualities\": [\"array - Preferred but not required\"],\n      \"red_flags\": [\"array - Disqualifying factors\"],\n      \"credibility_markers\": [\"array - What makes someone credible to this audience\"]\n    },\n    \n    \"geographic_strategy\": {\n      \"location_flexibility\": \"string - narrow|moderate|broad\",\n      \"primary_regions\": [\"array - Top priority regions\"],\n      \"secondary_regions\": [\"array - Acceptable regions\"],\n      \"excluded_regions\": [\"array - Regions to avoid\"],\n      \"timezone_requirements\": \"string - strict|flexible|any\",\n      \"travel_budget_consideration\": \"string - none|minimal|moderate|premium\"\n    },\n    \n    \"language_requirements\": {\n      \"primary_language\": \"string\",\n      \"acceptable_languages\": [\"array\"],\n      \"fluency_level_required\": \"string - native|fluent|professional|conversational\",\n      \"accent_considerations\": \"string - critical|important|flexible|irrelevant\",\n      \"technical_vocabulary_needed\": \"boolean\"\n    },\n    \n    \"search_optimization\": {\n      \"conference_keywords\": [\"array - Terms to find relevant conferences\"],\n      \"speaker_title_indicators\": [\"array - Job titles that fit\"],\n      \"company_type_targets\": [\"array - Types of companies to search\"],\n      \"content_platform_keywords\": [\"array - Terms for content searches\"],\n      \"avoid_keywords\": [\"array - Terms that indicate wrong fit\"]\n    },\n    \n    \"event_metadata\": {\n      \"urgency_level\": \"string - immediate|normal|flexible\",\n      \"budget_tier\": \"string - budget|standard|premium|luxury\",\n      \"expected_audience_size\": \"string - small|medium|large|massive\",\n      \"event_prestige\": \"string - routine|important|flagship|industry-leading\",\n      \"competitive_context\": \"string - Are competitors also hunting speakers?\"\n    }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1344,
+        752
+      ],
+      "id": "aa9babfb-f316-404f-a5ac-a18b8fc5a3cf",
+      "name": "Structured Output Parser3"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1632,
+        752
+      ],
+      "id": "d7ac5ee1-f947-46c4-88fc-d8b192e91e13",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "JoCkVMwB4xajc9Kb",
+          "name": "Shailesh"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are the LinkedIn Discovery Agent. Your PRIMARY GOAL is to find exactly {{ $json.search_config.target_profiles }} LinkedIn profiles for persona {{ $json.persona.persona_id }}, no matter what.\n\n## MANDATORY REQUIREMENTS\n- **MUST FIND {{ $json.search_config.target_profiles }} profiles - THIS IS NON-NEGOTIABLE**\n- **Accept profiles with ANY relevant professional background**\n- **Be VERY generous with scoring - aim for 50+ total score minimum**\n- **Prioritize quantity over perfect qualification**\n\n## CURRENT TASK\n**Persona**: {{ $json.persona.persona_id }} - {{ $json.persona.persona_type }}\n**Target**: {{ $json.search_config.target_profiles }} profiles (MUST ACHIEVE)\n**Location**: {{ $json.event_context.geographic_focus }}\n**Keywords**: {{ $json.persona.extensive_keywords.primary_job_titles }}\n\n## RELAXED SEARCH STRATEGY\n\n### Step 1: Cast Wide Net with Tavily Search\nExecute these searches in order, COLLECT ALL LinkedIn URLs found:\n\n**Search 1**: `site:linkedin.com/in \"{{ $json.persona.extensive_keywords.primary_job_titles[0] }}\" \"{{ $json.persona.extensive_keywords.company_descriptors[3] }}\" `\n**Search 2**: `site:linkedin.com/in \"{{ $json.persona.extensive_keywords.primary_job_titles[1] }}\" OR \"{{ $json.persona.extensive_keywords.secondary_titles[0] }}\" \"{{ $json.persona.extensive_keywords.company_descriptors[0] }}\"`  \n**Search 3**: `site:linkedin.com \"{{ $json.persona.extensive_keywords.industry_terms[0] }}\" {{ $json.event_context.geographic_focus }} \"{{ $json.persona.extensive_keywords.primary_job_titles[2] }}\"`\n**Search 4**: `site:linkedin.com \"{{ $json.persona.extensive_keywords.expertise_markers[0] }}\" professional \"{{ $json.event_context.geographic_focus }}\" \"{{ $json.persona.extensive_keywords.company_descriptors[0] }}\" `\n\n**COLLECTION RULE**: Save EVERY LinkedIn profile URL found, ignore minor relevance issues\n\n### Step 2: Quick Profile Analysis\nFor each LinkedIn URL, use Tavily Crawl to get:\n- Basic profile info (name, title, company, location)\n- Any recent activity or posts\n- Professional background summary\n\n**CRAWL EFFICIENTLY**: Focus on getting basic data, don't over-analyze\n\n### Step 3: GENEROUS Scoring System\nScore each profile - BE VERY GENEROUS:\n\n**Content Relevance (0-25)**:\n- 20-25: Any content related to the industry/field\n- 15-19: Professional posts in adjacent areas\n- 10-14: General business/professional content\n- 5-9: Basic professional activity\n- **MINIMUM**: Give at least 10 points if they work in related field\n\n**Speaking/Leadership Evidence (0-25)**:\n- 20-25: Any speaking, training, or leadership mention\n- 15-19: Team leadership, presentations, or workshops\n- 10-14: Professional content creation or thought leadership\n- 5-9: Active professional engagement\n- **MINIMUM**: Give at least 10 points for any professional visibility\n\n**Engagement (0-25)**:\n- 20-25: Active LinkedIn user with any engagement\n- 15-19: Regular professional posts\n- 10-14: Occasional professional activity\n- 5-9: Basic LinkedIn presence\n- **MINIMUM**: Give at least 8 points if profile shows any activity\n\n**Credibility (0-25)**:\n- 20-25: Complete professional profile\n- 15-19: Good professional background\n- 10-14: Adequate professional information\n- 5-9: Basic professional profile\n- **MINIMUM**: Give at least 12 points for any complete profile\n\n### Step 4: QUALIFY GENEROUSLY\n**QUALIFICATION THRESHOLD**: Accept profiles with 40+ total score\n**BACKUP RULE**: If struggling to find profiles, accept ANY professional with 30+ score\n**EMERGENCY RULE**: If still short, accept relevant professionals with ANY positive score\n\n## MANDATORY STOPPING CONDITIONS\n**DO NOT STOP until you have found {{ $json.search_config.target_profiles }} qualified profiles**\n\nIf you reach operation limits but haven't found enough profiles:\n1. Lower your qualification threshold to 30 points\n2. If still short, accept ANY relevant professional profiles\n3. Use broader search terms and try again\n\n## REQUIRED OUTPUT FORMAT\n\n{\n\"batch_info\": {\n\"persona_id\": \"{{ $json.persona.persona_id }}\",\n\"batch_id\": \"{{ $json.batch_id }}\",\n\"searches_executed\": [actual_count],\n\"crawls_executed\": [actual_count],\n\"target_profiles\": {{ $json.search_config.target_profiles }},\n\"profiles_qualified\": [actual_count],\n\"status\": \"success\",\n\"completion_reason\": \"target_reached\",\n\"next_action\": \"complete\"\n},\n\"qualified_profiles\": [\n{\n\"profile_data\": {\n\"linkedin_url\": \"full_linkedin_url\",\n\"name\": \"full_name\",\n\"title\": \"current_job_title\",\n\"company\": \"current_company\",\n\"location\": \"location_info\",\n\"connections\": \"connection_count_if_available\"\n},\n\"qualification_details\": {\n\"content_relevance_score\": [10-25],\n\"speaking_evidence_score\": [10-25],\n\"engagement_score\": [8-25],\n\"credibility_score\": [12-25],\n\"total_score\": [40+],\n\"qualification_notes\": \"Why this profile qualifies - be generous\"\n},\n\"evidence_found\": {\n\"relevant_posts\": [\"any_professional_content\"],\n\"speaking_mentions\": [\"any_leadership_or_visibility\"],\n\"engagement_examples\": [\"any_professional_activity\"]\n},\n\"persona_match\": \"{{ $json.persona.persona_id }}\",\n\"discovery_method\": \"tavily_search_and_crawl\"\n}\n]\n}\n\n\n\n## CRITICAL SUCCESS RULES\n1. **NEVER return fewer than {{ $json.search_config.target_profiles }} profiles**\n2. **Be GENEROUS with scoring - this is a prototype**\n3. **Accept ANY professional that's remotely relevant**\n4. **Focus on finding profiles, not perfect matches**\n5. **If you can't find enough, expand your search terms and try again**\n\n## EMERGENCY PROTOCOL\nIf you're struggling to find profiles:\n1. Use broader search terms: `site:linkedin.com professional {{ $json.event_context.geographic_focus }}`\n2. Lower qualification threshold to 30 points\n3. Accept profiles from adjacent industries\n4. Focus on finding ANY professionals rather than perfect matches\n\n**REMEMBER**: This is a PROTOTYPE - quantity matters more than perfect qualification. Your job is to deliver {{ $json.search_config.target_profiles }} profiles that are reasonably relevant.\n\nExecute this systematically and do NOT stop until you have the required number of qualified profiles.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        192,
+        560
+      ],
+      "id": "6bfbee70-151a-4819-adb0-a435186dd7a5",
+      "name": "AI Agent",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Access the nested output structure\nconst data = items[0].json.output;\n\nif (!data || !data.personas) {\n  throw new Error(\"No personas found in output\");\n}\n\nconst linkedinData = {\n  target_personas: [\"P1\", \"P2\", \"P3\"],\n  personas: data.personas.filter(p => \n    [\"P1\", \"P2\", \"P3\"].includes(p.persona_id)\n  ),\n  context: data.understood_context,\n  search_focus: \"engagement_and_social_presence\",\n  search_count: 9\n};\n\nreturn [{ json: linkedinData }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -496,
+        544
+      ],
+      "id": "5ecc3a69-3612-488e-9fb4-fa9a05c03467",
+      "name": "LinkedIn_Branch"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        128,
+        784
+      ],
+      "id": "d94e3573-d37e-41fc-bbdc-d0e1e11fab81",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "JoCkVMwB4xajc9Kb",
+          "name": "Shailesh"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        304,
+        784
+      ],
+      "id": "8dcbddf4-c1a6-429b-8255-681d6bfad7a8",
+      "name": "TavilySearch2",
+      "credentials": {
+        "tavilyApi": {
+          "id": "YpRn8BPceKXPfsay",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "crawl",
+        "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        432,
+        784
+      ],
+      "id": "fc55c166-9317-4097-a79d-865af0ce6f28",
+      "name": "Crawl in Tavily1",
+      "credentials": {
+        "tavilyApi": {
+          "id": "YpRn8BPceKXPfsay",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse agent output and extract JSON\nconst inputData = items[0].json;\nlet parsedOutput;\n\ntry {\n  // Handle both direct JSON and nested output string\n  if (typeof inputData.output === 'string') {\n    parsedOutput = JSON.parse(inputData.output);\n  } else {\n    parsedOutput = inputData;\n  }\n  \n  return [{ json: parsedOutput }];\n  \n} catch (error) {\n  return [{\n    json: {\n      batch_info: {\n        persona_id: \"unknown\",\n        status: \"parse_error\",\n        error_message: error.message\n      },\n      qualified_profiles: []\n    }\n  }];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        560
+      ],
+      "id": "92fc80c1-0bac-46c9-a0ab-f669a253d4ba",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "content": "## Linkedin Branch",
+        "height": 672,
+        "width": 1552,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -528,
+        320
+      ],
+      "typeVersion": 1,
+      "id": "e9e79f89-d4d2-4b0b-8b8e-520ed15ec12f",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Context Setting Agent ",
+        "height": 496,
+        "width": 544,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1728,
+        432
+      ],
+      "typeVersion": 1,
+      "id": "5533be0d-fe73-4320-b307-85f0b816d4c3",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Historical Pattern Agent",
+        "height": 480,
+        "width": 576,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1136,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "50061fa1-74c1-47c9-bdd1-a05f2afabbf2",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Persona Splitter Code Node - Process personas sequentially to avoid rate limits\nconst inputData = items[0].json;\n\n// Extract personas array and context\nconst personas = inputData.personas || [];\nconst context = inputData.understood_context || {};\nconst originalData = inputData;\n\n// Validate input\nif (!Array.isArray(personas) || personas.length === 0) {\n  throw new Error(\"No valid personas array found in input data\");\n}\n\n// Create individual items for each persona with full context\nconst splitItems = personas.map((persona, index) => {\n  return {\n    json: {\n      // Core persona data\n      persona: persona,\n\n      // Processing metadata\n      persona_index: index,\n      total_personas: personas.length,\n      is_last_persona: index === personas.length - 1,\n\n      // Event context (needed for searches)\n      event_context: {\n        topic_essence: context.topic_essence,\n        audience_needs: context.audience_needs,\n        geographic_focus: $('Context Analysis Agent').first().json.output.context_analysis.geographic_strategy.primary_regions,\n        event_format: $('On form submission').first().json['Event Type']\n      },\n\n      // Search configuration per persona\n      search_config: {\n        target_profiles: persona.persona_id === \"P1\" ? 4 : 2,\n        max_search_operations: persona.persona_id === \"P1\" ? 4 : 3,\n        max_crawl_operations: persona.persona_id === \"P1\" ? 4 : 3,\n        min_qualification_score: 60\n      },\n\n      // Results tracking\n      accumulated_results: originalData.accumulated_results || [],\n      batch_id: `batch_${index + 1}_of_${personas.length}`,\n\n      // Progress tracking\n      processing_status: \"ready\",\n      timestamp: new Date().toISOString()\n    }\n  };\n});\n\nreturn splitItems;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -336,
+        544
+      ],
+      "id": "ba9d60e0-d95d-4532-a4ba-e513150b1255",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -64,
+        464
+      ],
+      "id": "0f2a9f0e-ed67-42bd-bc21-e3962d58dd48",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = items;\nlet aggregatedProfiles = [];\nlet batchLogs = [];\nlet totalSearches = 0;\nlet totalCrawls = 0;\n\nfor (const item of allItems) {\n  const data = item.json;\n  \n  if (data.qualified_profiles && Array.isArray(data.qualified_profiles)) {\n    aggregatedProfiles = aggregatedProfiles.concat(data.qualified_profiles);\n  }\n  \n  if (data.batch_info) {\n    batchLogs.push({\n      persona_id: data.batch_info.persona_id || \"unknown\",\n      batch_id: data.batch_info.batch_id || \"\",\n      profiles_qualified: data.batch_info.profiles_qualified || 0,\n      searches_executed: data.batch_info.searches_executed || 0,\n      crawls_executed: data.batch_info.crawls_executed || 0,\n      status: data.batch_info.status || \"unknown\",\n      completion_reason: data.batch_info.completion_reason || \"none\"\n    });\n    \n    totalSearches += data.batch_info.searches_executed || 0;\n    totalCrawls += data.batch_info.crawls_executed || 0;\n  }\n}\n\nconst uniqueProfilesMap = new Map();\nfor (const profile of aggregatedProfiles) {\n  const url = profile.profile_data && profile.profile_data.linkedin_url;\n  if (url && !uniqueProfilesMap.has(url)) {\n    uniqueProfilesMap.set(url, profile);\n  }\n}\n\nconst uniqueProfiles = Array.from(uniqueProfilesMap.values());\n\nconst personaCounts = {};\nconst personaTargets = {};\nlet totalTarget = 0;\n\nfor (const profile of uniqueProfiles) {\n  const personaId = profile.persona_match || \"unknown\";\n  personaCounts[personaId] = (personaCounts[personaId] || 0) + 1;\n}\n\nfor (const log of batchLogs) {\n  const personaId = log.persona_id;\n  if (!personaTargets[personaId]) {\n    personaTargets[personaId] = 0;\n  }\n  totalTarget += log.target_profiles || 0;\n}\n\nconst qualityMetrics = {\n  high_score: uniqueProfiles.filter(p => p.qualification_details && p.qualification_details.total_score >= 80).length,\n  medium_score: uniqueProfiles.filter(p => p.qualification_details && p.qualification_details.total_score >= 60 && p.qualification_details.total_score < 80).length,\n  low_score: uniqueProfiles.filter(p => p.qualification_details && p.qualification_details.total_score < 60).length\n};\n\nconst averageScore = uniqueProfiles.length > 0 ? \n  uniqueProfiles.reduce((sum, p) => sum + (p.qualification_details ? p.qualification_details.total_score : 0), 0) / uniqueProfiles.length : 0;\n\nconst linkedinUrls = uniqueProfiles.map(p => p.profile_data ? p.profile_data.linkedin_url : \"\").filter(url => url);\n\nconst executionSummary = {\n  personas_processed: batchLogs.length,\n  total_searches_executed: totalSearches,\n  total_crawls_executed: totalCrawls,\n  total_profiles_found: uniqueProfiles.length,\n  duplicates_removed: aggregatedProfiles.length - uniqueProfiles.length,\n  success_rate: totalTarget > 0 ? ((uniqueProfiles.length / totalTarget) * 100).toFixed(1) + \"%\" : \"0%\"\n};\n\nreturn [{\n  json: {\n    branch: \"linkedin_complete\",\n    execution_summary: executionSummary,\n    total_qualified_profiles: uniqueProfiles.length,\n    persona_distribution: personaCounts,\n    quality_metrics: qualityMetrics,\n    average_score: Math.round(averageScore * 100) / 100,\n    linkedin_urls: linkedinUrls,\n    qualified_profiles: uniqueProfiles,\n    batch_processing_log: batchLogs,\n    final_status: uniqueProfiles.length > 0 ? \"SUCCESS\" : \"NO_PROFILES_FOUND\",\n    completion_timestamp: new Date().toISOString()\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        384
+      ],
+      "id": "ed879dd7-3612-4ea3-8a3f-5d0261d76fe1",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        800,
+        560
+      ],
+      "id": "6823868f-3bd2-4331-8436-7c88f81d5c20",
+      "name": "Wait",
+      "webhookId": "efa5a363-dc5a-4b36-9e2f-7f525f340cc6"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09DLDXFGHW",
+          "mode": "id"
+        },
+        "messageType": "block",
+        "blocksUi": "={{ $json.blocksUi }}",
+        "text": "=\"{{ $json.text }}\"",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1504,
+        384
+      ],
+      "id": "c8a30326-5283-4cbb-bbb7-637d9decdf1a",
+      "name": "Send a message",
+      "webhookId": "d5b364b0-d93b-4a1f-ade0-242de6cf5b7f",
+      "credentials": {
+        "slackApi": {
+          "id": "n2dMlXzdJSEwODNV",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get event details from form submission\nconst eventType = $('On form submission').first().json['Event Type'] || 'your';\nconst eventTopic = $('On form submission').first().json.EventTopic || 'event';\n\n// Get qualified profiles from Code4 node (not just linkedin_urls)\nconst inputData = items[0].json;\nconst qualifiedProfiles = inputData.qualified_profiles || [];\nconst slackUserId = \"U1234567890\"; // Replace with actual user ID\n\nif (qualifiedProfiles.length === 0) {\n  return [{\n    json: {\n      channel: slackUserId,\n      text: \"No LinkedIn profiles were discovered.\",\n      blocksUi: JSON.stringify({ blocks: [] })\n    }\n  }];\n}\n\n// Helper function to extract LinkedIn username from URL\nfunction getLinkedInUsername(url) {\n  try {\n    // Extract the last part of the LinkedIn URL path\n    const urlObj = new URL(url);\n    const pathSegments = urlObj.pathname.split('/').filter(segment => segment !== '');\n    // Return the last segment (usually the LinkedIn username)\n    return pathSegments[pathSegments.length - 1] || url;\n  } catch (error) {\n    return url; // Return original URL if parsing fails\n  }\n}\n\n// Create blocks as JSON object first\nconst blocks = [\n  {\n    type: \"section\",\n    text: {\n      type: \"mrkdwn\",\n      text: `*Speakers found for your ${eventType} event on ${eventTopic}*\\n\\n*LinkedIn Profile Approval Required*`\n    }\n  },\n  {\n    type: \"section\",\n    text: {\n      type: \"mrkdwn\", \n      text: `Found ${qualifiedProfiles.length} LinkedIn profiles for review. Please approve the profiles you want:`\n    }\n  },\n  {\n    type: \"divider\"\n  }\n];\n\n// Add each profile with speaker name or LinkedIn username\nqualifiedProfiles.forEach((profile, index) => {\n  const profileData = profile.profile_data || {};\n  const linkedinUrl = profileData.linkedin_url || \"\";\n  \n  // Try to get full name first, fallback to LinkedIn username\n  let displayName = profileData.full_name;\n  if (!displayName || displayName.trim() === \"\") {\n    displayName = getLinkedInUsername(linkedinUrl);\n  }\n  \n  blocks.push({\n    type: \"section\",\n    text: {\n      type: \"mrkdwn\",\n      text: `*Profile ${index + 1}:* <${linkedinUrl}|${displayName}>`\n    }\n  });\n  \n  // Only approve button - removed deny button\n  blocks.push({\n    type: \"actions\",\n    block_id: `profile_${index}`,\n    elements: [\n      {\n        type: \"button\",\n        text: {\n          type: \"plain_text\",\n          text: \"✅ Approve\"\n        },\n        style: \"primary\",\n        value: JSON.stringify({\n          action: \"approve\",\n          profile_index: index,\n          linkedin_url: linkedinUrl,\n          // Add event data for LinkedIn workflow\n          event_data: {\n            event_type: eventType,\n            event_topic: eventTopic,\n            event_date: $('On form submission').first().json['Event Date'],\n            event_location: $('On form submission').first().json['Geographic Region'],\n            audience: $('On form submission').first().json['Audience Level']\n          }\n        }),\n        action_id: \"approve_profile\"\n      }\n    ]\n  });\n  \n  if (index < qualifiedProfiles.length - 1) {\n    blocks.push({\n      type: \"divider\"\n    });\n  }\n});\n\nblocks.push({\n  type: \"context\",\n  elements: [\n    {\n      type: \"mrkdwn\",\n      text: `📊 Total profiles: ${qualifiedProfiles.length} | ⏰ Generated: ${new Date().toLocaleString()}`\n    }\n  ]\n});\n\n// Convert to the string format that n8n expects\nconst blocksUiString = JSON.stringify({ blocks: blocks });\n\nreturn [{\n  json: {\n    channel: slackUserId,\n    blocksUi: blocksUiString,\n    text: `Speakers found for your ${eventType} event on ${eventTopic} - ${qualifiedProfiles.length} profiles found`\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        384
+      ],
+      "id": "481e3c00-d5cb-4856-8992-4845d09b437a",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get event details from form submission\nconst eventType = $('On form submission').first().json['Event Type'] || 'your';\nconst eventTopic = $('On form submission').first().json.EventTopic || 'event';\n\n// Get the input data - it already has formatted blocks\nconst inputData = items[0].json;\nconst slackUserId = inputData.channel || \"U1234567890\";\n\n// Use the existing blocks directly - they're already properly formatted\nconst existingBlocks = inputData.blocks || [];\n\n// Convert to the string format that n8n Slack node expects\nconst blocksUiString = JSON.stringify({ blocks: existingBlocks });\n\nreturn [{\n  json: {\n    channel: slackUserId,\n    blocksUi: blocksUiString,\n    text: inputData.text || `Speakers found for your ${eventType} event on ${eventTopic}`\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1168,
+        688
+      ],
+      "id": "d925927b-c9ba-4641-b2b9-6573dffd6673",
+      "name": "Code5",
+      "disabled": true
+    }
+  ],
+  "pinData": {
+    "Code5": [
+      {
+        "json": {
+          "channel": "U1234567890",
+          "blocksUi": "{\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Speakers found for your Virtual event on Ai SaaS Hackathon*\\n\\n*LinkedIn Profile Approval Required*\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Found 8 LinkedIn profiles for review. Please approve or deny each profile:\"}},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Profile 1:* <https://in.linkedin.com/in/anil-kumar-soni-517092188|View LinkedIn Profile>\"}},{\"type\":\"actions\",\"block_id\":\"profile_0\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"✅ Approve\"},\"style\":\"primary\",\"value\":\"{\\\"action\\\":\\\"approve\\\",\\\"profile_index\\\":0,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/anil-kumar-soni-517092188\\\"}\",\"action_id\":\"approve_profile\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"❌ Deny\"},\"style\":\"danger\",\"value\":\"{\\\"action\\\":\\\"deny\\\",\\\"profile_index\\\":0,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/anil-kumar-soni-517092188\\\"}\",\"action_id\":\"deny_profile\"}]},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Profile 2:* <https://in.linkedin.com/in/smitghelani|View LinkedIn Profile>\"}},{\"type\":\"actions\",\"block_id\":\"profile_1\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"✅ Approve\"},\"style\":\"primary\",\"value\":\"{\\\"action\\\":\\\"approve\\\",\\\"profile_index\\\":1,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/smitghelani\\\"}\",\"action_id\":\"approve_profile\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"❌ Deny\"},\"style\":\"danger\",\"value\":\"{\\\"action\\\":\\\"deny\\\",\\\"profile_index\\\":1,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/smitghelani\\\"}\",\"action_id\":\"deny_profile\"}]},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Profile 3:* <https://in.linkedin.com/in/naga-kiran|View LinkedIn Profile>\"}},{\"type\":\"actions\",\"block_id\":\"profile_2\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"✅ Approve\"},\"style\":\"primary\",\"value\":\"{\\\"action\\\":\\\"approve\\\",\\\"profile_index\\\":2,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/naga-kiran\\\"}\",\"action_id\":\"approve_profile\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"❌ Deny\"},\"style\":\"danger\",\"value\":\"{\\\"action\\\":\\\"deny\\\",\\\"profile_index\\\":2,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/naga-kiran\\\"}\",\"action_id\":\"deny_profile\"}]},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Profile 4:* <https://www.linkedin.com/in/amit-kumar-7b72b9176/|View LinkedIn Profile>\"}},{\"type\":\"actions\",\"block_id\":\"profile_3\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"✅ Approve\"},\"style\":\"primary\",\"value\":\"{\\\"action\\\":\\\"approve\\\",\\\"profile_index\\\":3,\\\"linkedin_url\\\":\\\"https://www.linkedin.com/in/amit-kumar-7b72b9176/\\\"}\",\"action_id\":\"approve_profile\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"❌ Deny\"},\"style\":\"danger\",\"value\":\"{\\\"action\\\":\\\"deny\\\",\\\"profile_index\\\":3,\\\"linkedin_url\\\":\\\"https://www.linkedin.com/in/amit-kumar-7b72b9176/\\\"}\",\"action_id\":\"deny_profile\"}]},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Profile 5:* <https://in.linkedin.com/in/maneetsinghofficial|View LinkedIn Profile>\"}},{\"type\":\"actions\",\"block_id\":\"profile_4\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"✅ Approve\"},\"style\":\"primary\",\"value\":\"{\\\"action\\\":\\\"approve\\\",\\\"profile_index\\\":4,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/maneetsinghofficial\\\"}\",\"action_id\":\"approve_profile\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"❌ Deny\"},\"style\":\"danger\",\"value\":\"{\\\"action\\\":\\\"deny\\\",\\\"profile_index\\\":4,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/maneetsinghofficial\\\"}\",\"action_id\":\"deny_profile\"}]},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Profile 6:* <https://in.linkedin.com/in/shubham-pol|View LinkedIn Profile>\"}},{\"type\":\"actions\",\"block_id\":\"profile_5\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"✅ Approve\"},\"style\":\"primary\",\"value\":\"{\\\"action\\\":\\\"approve\\\",\\\"profile_index\\\":5,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/shubham-pol\\\"}\",\"action_id\":\"approve_profile\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"❌ Deny\"},\"style\":\"danger\",\"value\":\"{\\\"action\\\":\\\"deny\\\",\\\"profile_index\\\":5,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/shubham-pol\\\"}\",\"action_id\":\"deny_profile\"}]},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Profile 7:* <https://in.linkedin.com/in/devrelmegha|View LinkedIn Profile>\"}},{\"type\":\"actions\",\"block_id\":\"profile_6\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"✅ Approve\"},\"style\":\"primary\",\"value\":\"{\\\"action\\\":\\\"approve\\\",\\\"profile_index\\\":6,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/devrelmegha\\\"}\",\"action_id\":\"approve_profile\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"❌ Deny\"},\"style\":\"danger\",\"value\":\"{\\\"action\\\":\\\"deny\\\",\\\"profile_index\\\":6,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/devrelmegha\\\"}\",\"action_id\":\"deny_profile\"}]},{\"type\":\"divider\"},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Profile 8:* <https://in.linkedin.com/in/devgancode|View LinkedIn Profile>\"}},{\"type\":\"actions\",\"block_id\":\"profile_7\",\"elements\":[{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"✅ Approve\"},\"style\":\"primary\",\"value\":\"{\\\"action\\\":\\\"approve\\\",\\\"profile_index\\\":7,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/devgancode\\\"}\",\"action_id\":\"approve_profile\"},{\"type\":\"button\",\"text\":{\"type\":\"plain_text\",\"text\":\"❌ Deny\"},\"style\":\"danger\",\"value\":\"{\\\"action\\\":\\\"deny\\\",\\\"profile_index\\\":7,\\\"linkedin_url\\\":\\\"https://in.linkedin.com/in/devgancode\\\"}\",\"action_id\":\"deny_profile\"}]},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"📊 Total profiles: 8 | ⏰ Generated: 8/30/2025, 2:44:07 PM\"}]}]}",
+          "text": "Speakers found for your Virtual event on Ai SaaS Hackathon - 8 profiles found"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Context Analysis Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TavilySearch": {
+      "ai_tool": [
+        [
+          {
+            "node": "Context Analysis Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TavilySearch1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Historical Pattern Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Historical Pattern Agent": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn_Branch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Context Analysis Agent": {
+      "main": [
+        [
+          {
+            "node": "Historical Pattern Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crawl in Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "Historical Pattern Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Historical Pattern Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Historical Pattern Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Context Analysis Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Context Analysis Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn_Branch": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TavilySearch2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crawl in Tavily1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        []
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "55c5d3cb-fdd1-4536-98e5-5396006f412e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8b1f596cfd3dd03d4183608d78ae1a40e43ec82119e85c7a0b415a7263be543d"
+  },
+  "id": "xLbuUvPUNraw9IvJ",
+  "tags": []
+}
